@@ -10,7 +10,7 @@ Assuming you already have the [Heroku Toolbelt](https://toolbelt.heroku.com/) in
 1. `$ bundle install`
 1. `$ cp .env.sample .env`
 1. `$ bundle exec rake db:create db:migrate`
-1. `$ foreman start web`
+1. `$ foreman start web` (gem install foreman if foreman is not present)
 1. Open [http://localhost:5000](http://localhost:5000) to see Discourse running locally
 
 ## Deploying to Heroku
@@ -19,20 +19,19 @@ Once the app is running locally, and while still in the app directory, execute t
 
 1. Create the app on Heroku: `$ heroku create discourse-myname`
 1. Provision recommended add-ons:
-  1. `$ heroku addons:add heroku-postgresql`
+  1. `$ heroku addons:create heroku-postgresql`
   1. Promote your database to be the main database for your app. `color` would be `gold` if you saw `HEROKU_POSTGRESQL_GOLD_URL` after running `heroku config`
   
     `$ heroku pg:promote [color]`
 
-  1. `$ heroku addons:add openredis`
-  1. `$ heroku addons:add sendgrid`
-  1. `$ heroku addons:add papertrail`
-  1. `$ heroku addons:add librato --logs`
-  1. `$ heroku addons:add honeybadger`
-  1. `$ heroku addons:add newrelic:stark`
+  1. `$ heroku addons:create openredis`
+  1. `$ heroku addons:create sendgrid`
+  1. `$ heroku addons:create papertrail`
+  1. `$ heroku addons:create librato --logs`
+  1. `$ heroku addons:create honeybadger`
+  1. `$ heroku addons:create newrelic:wayne`
 1. Enable recommended lab features
-  1. `$ heroku labs:enable user-env-compile`
-  1. `$ heroku labs:enable log-runtime-metrics`
+  1. `$ heroku labs:enable log-runtime-metrics` (WARNING: This feature is experimental and may change or be removed without notice.)
 1. Set config:
 ```
 $ heroku config:set SECRET_TOKEN=`openssl rand -base64 32` RACK_ENV=production RUBY_GC_MALLOC_LIMIT=90000000 WEB_CONCURRENCY=2 NEW_RELIC_APP_NAME=Discourse
@@ -49,7 +48,7 @@ $ heroku config:set SECRET_TOKEN=`openssl rand -base64 32` RACK_ENV=production R
 The default instructions provision add-ons/services we recommend for running a production application. Developers that are just playing around, or don't need a production caliber service, can reduce their cost with a few adjustments.
 
 1. We recommend the Honeybadger add-on to notify you of any app exceptions that occur. If you are willing to forego this service, remove it with: `$ heroku addons:remove honeybadger`
-1. Openredis provides a small Redis instance, which is required for Discourse. You can provision a smaller, free, alternative if you wish: `$ heroku addons:remove openredis && heroku addons:add redistogo`
+1. Openredis provides a small Redis instance, which is required for Discourse. You can provision a smaller, free, alternative if you wish: `$ heroku addons:remove openredis && heroku addons:create redistogo`
 
 If you follow each step here, your total cost will be reduced to that of two dynos (one of which is free) - about $35/month.
 
